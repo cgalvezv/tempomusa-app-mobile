@@ -14,9 +14,10 @@ const CAROUSEL_WIDTH = Dimensions.get('window').width - 28;
 
 interface ImageCarouselProps {
   images: string[];
+  dimmed?: boolean;
 }
 
-export default function ImageCarousel({ images }: ImageCarouselProps) {
+export default function ImageCarousel({ images, dimmed }: ImageCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
@@ -30,7 +31,7 @@ export default function ImageCarousel({ images }: ImageCarouselProps) {
   if (!hasImages) {
     return (
       <View style={styles.container}>
-        <View style={styles.placeholder}>
+        <View style={[styles.placeholder, dimmed && styles.dimmed]}>
           <Text style={styles.placeholderIcon}>🖼</Text>
           <Text style={styles.placeholderText}>Sin imágenes de referencia</Text>
         </View>
@@ -49,7 +50,7 @@ export default function ImageCarousel({ images }: ImageCarouselProps) {
         onMomentumScrollEnd={onScroll}
         keyExtractor={(_, i) => String(i)}
         renderItem={({ item }) => (
-          <View style={styles.imageSlide}>
+          <View style={[styles.imageSlide, dimmed && styles.dimmed]}>
             <Text style={styles.imageEmoji}>{item || '🖼'}</Text>
           </View>
         )}
@@ -100,6 +101,9 @@ const styles = StyleSheet.create({
   },
   imageEmoji: {
     fontSize: 28,
+  },
+  dimmed: {
+    opacity: 0.45,
   },
   photoLabel: {
     fontSize: 10,

@@ -8,6 +8,7 @@ import PlayerTopBar from '../components/molecules/PlayerTopBar';
 import ImageCarousel from '../components/molecules/ImageCarousel';
 import PoseTimerBlock from '../components/molecules/PoseTimerBlock';
 import TransportControls from '../components/molecules/TransportControls';
+import PauseBadge from '../components/atoms/PauseBadge';
 
 export default function PlayerScreen({ navigation, route }: PlayerProps) {
   const { session } = route.params;
@@ -33,7 +34,7 @@ export default function PlayerScreen({ navigation, route }: PlayerProps) {
         />
 
         {/* Image carousel */}
-        <ImageCarousel images={player.currentPose.images} />
+        <ImageCarousel images={player.currentPose.images} dimmed={!player.isPlaying} />
 
         {/* Pose info */}
         <View style={styles.poseInfo}>
@@ -49,7 +50,15 @@ export default function PlayerScreen({ navigation, route }: PlayerProps) {
           progress={player.poseProgress}
           totalDurationLabel={formatDuration(player.currentPose.durationSeconds)}
           badge={badgeInfo}
+          muted={!player.isPlaying}
         />
+
+        {/* Pause badge */}
+        {!player.isPlaying && (
+          <View style={styles.pauseBadgeWrap}>
+            <PauseBadge />
+          </View>
+        )}
 
         {/* Transport controls */}
         <TransportControls
@@ -116,5 +125,9 @@ const styles = StyleSheet.create({
   finishBtn: {
     fontSize: 10,
     color: '#E24B4A',
+  },
+  pauseBadgeWrap: {
+    alignItems: 'center',
+    marginTop: 2,
   },
 });

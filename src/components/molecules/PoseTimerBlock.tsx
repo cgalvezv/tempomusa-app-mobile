@@ -9,14 +9,15 @@ interface PoseTimerBlockProps {
   progress: number;
   totalDurationLabel: string;
   badge: { label: string; variant: 'corta' | 'larga' } | null;
+  muted?: boolean;
 }
 
-export default function PoseTimerBlock({ formattedTime, progress, totalDurationLabel, badge }: PoseTimerBlockProps) {
+export default function PoseTimerBlock({ formattedTime, progress, totalDurationLabel, badge, muted }: PoseTimerBlockProps) {
   return (
     <View style={styles.container}>
-      <CountdownDisplay time={formattedTime} />
+      <CountdownDisplay time={formattedTime} muted={muted} />
       <View style={styles.barWrap}>
-        <ProgressBar progress={progress} height={6} />
+        <ProgressBar progress={progress} height={6} color={muted ? '#ccc' : '#1a1a1a'} />
       </View>
       <View style={styles.metaRow}>
         <Text style={styles.metaText}>de {totalDurationLabel}</Text>
