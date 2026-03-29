@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen';
 import SessionDetailScreen from '../screens/SessionDetailScreen';
+import PlayerScreen from '../screens/PlayerScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import { HomeStackParamList } from '../types/navigation';
 
@@ -15,6 +16,7 @@ function HomeStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="HomeList" component={HomeScreen} />
       <Stack.Screen name="SessionDetail" component={SessionDetailScreen} />
+      <Stack.Screen name="Player" component={PlayerScreen} options={{ animation: 'slide_from_bottom' }} />
     </Stack.Navigator>
   );
 }

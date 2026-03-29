@@ -12,7 +12,7 @@ export default function SessionDetailScreen({ navigation, route }: SessionDetail
   const totalSeconds = session.poses.reduce((sum, p) => sum + p.durationSeconds, 0);
 
   const handleStart = () => {
-    // TODO: navegar al reproductor
+    navigation.navigate('Player', { session });
   };
 
   return (

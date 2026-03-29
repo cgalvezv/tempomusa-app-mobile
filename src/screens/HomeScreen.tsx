@@ -9,7 +9,7 @@ import { HomeListProps } from '../types/navigation';
 
 export default function HomeScreen({ navigation }: HomeListProps) {
   const handleStart = (session: Session) => {
-    // TODO: navegar al reproductor
+    navigation.navigate('Player', { session });
   };
 
   const handleDetail = (session: Session) => {
