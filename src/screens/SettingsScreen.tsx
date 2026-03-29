@@ -6,6 +6,7 @@ import SectionLabel from '../components/atoms/SectionLabel';
 import SettingRow from '../components/molecules/SettingRow';
 import AudioOptionRow from '../components/molecules/AudioOptionRow';
 import RestFieldControl from '../components/molecules/RestFieldControl';
+import VolumeSlider from '../components/molecules/VolumeSlider';
 
 export default function SettingsScreen() {
   const [darkMode, setDarkMode] = useState(true);
@@ -63,15 +64,7 @@ export default function SettingsScreen() {
               </View>
 
               {/* Volumen */}
-              <View style={styles.volumeWrap}>
-                <View style={styles.volumeHeader}>
-                  <Text style={styles.volumeLabel}>Volumen del aviso</Text>
-                  <Text style={styles.volumeValue}>{volume}%</Text>
-                </View>
-                <View style={styles.volumeTrack}>
-                  <View style={[styles.volumeFill, { width: `${volume}%` }]} />
-                </View>
-              </View>
+              <VolumeSlider value={volume} onChange={setVolume} />
             </>
           )}
 
@@ -127,35 +120,6 @@ const styles = StyleSheet.create({
     height: 0.5,
     backgroundColor: '#e8e8e8',
     marginLeft: 54,
-  },
-  volumeWrap: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#e8e8e8',
-  },
-  volumeHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  volumeLabel: {
-    fontSize: 14,
-    color: '#1a1a1a',
-  },
-  volumeValue: {
-    fontSize: 14,
-    color: '#888',
-  },
-  volumeTrack: {
-    height: 4,
-    backgroundColor: '#eee',
-    borderRadius: 2,
-  },
-  volumeFill: {
-    height: 4,
-    backgroundColor: '#1a1a1a',
-    borderRadius: 2,
   },
   restSection: {
     paddingHorizontal: 16,
