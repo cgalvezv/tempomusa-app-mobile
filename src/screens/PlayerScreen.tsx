@@ -8,7 +8,11 @@ import PlayerTopBar from '../components/molecules/PlayerTopBar';
 import ImageCarousel from '../components/molecules/ImageCarousel';
 import PoseTimerBlock from '../components/molecules/PoseTimerBlock';
 import TransportControls from '../components/molecules/TransportControls';
+import NextPosePreview from '../components/molecules/NextPosePreview';
 import PauseBadge from '../components/atoms/PauseBadge';
+import CountdownDisplay from '../components/atoms/CountdownDisplay';
+import ProgressBar from '../components/atoms/ProgressBar';
+import IconButton from '../components/atoms/IconButton';
 
 export default function PlayerScreen({ navigation, route }: PlayerProps) {
   const { session } = route.params;
@@ -22,6 +26,45 @@ export default function PlayerScreen({ navigation, route }: PlayerProps) {
   const badge = getDurationBadge(player.currentPose.durationSeconds);
   const badgeInfo = badge ? { label: badge.label, variant: badge.style } : null;
 
+  // Rest screen
+  if (player.isResting && player.nextPose) {
+    return (
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+        <View style={styles.container}>
+          <PlayerTopBar
+            sessionName={session.name}
+            currentPose={player.currentPoseIndex + 1}
+            totalPoses={session.poses.length}
+            progress={player.sessionProgress}
+          />
+
+          <View style={styles.restContent}>
+            <Text style={styles.restLabel}>Descanso</Text>
+            <CountdownDisplay time={formatCountdown(player.restSecondsRemaining)} />
+            <View style={styles.restBarWrap}>
+              <ProgressBar progress={player.restProgress} height={6} />
+            </View>
+            <Text style={styles.restMeta}>de {session.restSeconds} seg</Text>
+          </View>
+
+          <NextPosePreview pose={player.nextPose} />
+
+          <View style={styles.restControls}>
+            <IconButton
+              icon={player.isPlaying ? 'pause' : 'play'}
+              onPress={player.togglePlayPause}
+              size={18}
+            />
+            <TouchableOpacity style={styles.skipBtn} onPress={player.skipRest} activeOpacity={0.7}>
+              <Text style={styles.skipBtnText}>Saltar descanso →</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // Active / paused pose screen
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <View style={styles.container}>
@@ -129,5 +172,47 @@ const styles = StyleSheet.create({
   pauseBadgeWrap: {
     alignItems: 'center',
     marginTop: 2,
+  },
+  restContent: {
+    alignItems: 'center',
+    paddingTop: 14,
+    paddingBottom: 8,
+    paddingHorizontal: 14,
+  },
+  restLabel: {
+    fontSize: 11,
+    color: '#aaa',
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+    marginBottom: 6,
+  },
+  restBarWrap: {
+    width: '100%',
+    marginTop: 8,
+  },
+  restMeta: {
+    fontSize: 10,
+    color: '#aaa',
+    marginTop: 4,
+  },
+  restControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+  },
+  skipBtn: {
+    borderWidth: 0.5,
+    borderColor: '#ddd',
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    backgroundColor: '#f5f4f0',
+  },
+  skipBtnText: {
+    fontSize: 11,
+    color: '#888',
   },
 });
