@@ -18,7 +18,7 @@ export default function PlayerScreen({ navigation, route }: PlayerProps) {
   const { session } = route.params;
 
   const handleComplete = () => {
-    navigation.goBack();
+    navigation.replace('Summary', { session });
   };
 
   const player = useSessionPlayer(session, handleComplete);
