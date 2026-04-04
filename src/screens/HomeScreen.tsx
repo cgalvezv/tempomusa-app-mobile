@@ -17,7 +17,7 @@ export default function HomeScreen({ navigation }: HomeListProps) {
   };
 
   const handleNewSession = () => {
-    // TODO: navegar a crear sesión
+    navigation.navigate('CreateSession');
   };
 
   return (
