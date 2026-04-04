@@ -3,11 +3,12 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CreateSessionProps } from '../types/navigation';
 import { Pose, Session } from '../types';
-import { mockSessions } from '../data/mockSessions';
+import useSessions from '../hooks/useSessions';
 import SectionLabel from '../components/atoms/SectionLabel';
 import EditablePoseRow from '../components/molecules/EditablePoseRow';
 
 export default function CreateSessionScreen({ navigation, route }: CreateSessionProps) {
+  const { addSession } = useSessions();
   const [name, setName] = useState('');
   const [restSeconds, setRestSeconds] = useState(10);
   const [poses, setPoses] = useState<Pose[]>([]);
@@ -22,7 +23,7 @@ export default function CreateSessionScreen({ navigation, route }: CreateSession
     }
   }, [route.params?.newPose]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name.trim() || poses.length === 0) return;
 
     const newSession: Session = {
@@ -33,7 +34,7 @@ export default function CreateSessionScreen({ navigation, route }: CreateSession
       createdAt: Date.now(),
     };
 
-    mockSessions.unshift(newSession);
+    await addSession(newSession);
     navigation.goBack();
   };
 

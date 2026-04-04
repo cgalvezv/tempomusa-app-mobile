@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { mockSessions } from '../data/mockSessions';
+import { useFocusEffect } from '@react-navigation/native';
+import useSessions from '../hooks/useSessions';
 import SessionCard from '../components/molecules/SessionCard';
 import SectionLabel from '../components/atoms/SectionLabel';
 import { Session } from '../types';
 import { HomeListProps } from '../types/navigation';
 
 export default function HomeScreen({ navigation }: HomeListProps) {
+  const { sessions, refresh } = useSessions();
+
+  useFocusEffect(useCallback(() => { refresh(); }, [refresh]));
+
   const handleStart = (session: Session) => {
     navigation.navigate('Player', { session });
   };
@@ -43,7 +48,7 @@ export default function HomeScreen({ navigation }: HomeListProps) {
 
         {/* Lista de sesiones */}
         <FlatList
-          data={mockSessions}
+          data={sessions}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
