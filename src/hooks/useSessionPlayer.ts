@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { Audio } from 'expo-av';
 import { Session, Pose } from '../types';
 
 interface SessionPlayerState {
@@ -21,9 +22,15 @@ interface SessionPlayerActions {
   skipRest: () => void;
 }
 
+interface AudioConfig {
+  audioPath: string | null;
+  volume: number;
+}
+
 export default function useSessionPlayer(
   session: Session,
   onComplete: () => void,
+  audio?: AudioConfig,
 ): SessionPlayerState & SessionPlayerActions {
   const [currentPoseIndex, setCurrentPoseIndex] = useState(0);
   const [secondsRemaining, setSecondsRemaining] = useState(session.poses[0].durationSeconds);
@@ -32,6 +39,30 @@ export default function useSessionPlayer(
   const [restSecondsRemaining, setRestSecondsRemaining] = useState(0);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
+  const soundRef = useRef<Audio.Sound | null>(null);
+
+  const playAlert = useCallback(async () => {
+    if (!audio?.audioPath) return;
+    try {
+      if (soundRef.current) {
+        await soundRef.current.unloadAsync();
+      }
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: audio.audioPath },
+        { volume: (audio.volume ?? 70) / 100, shouldPlay: true },
+      );
+      soundRef.current = sound;
+    } catch {
+      // Audio playback failed silently
+    }
+  }, [audio?.audioPath, audio?.volume]);
+
+  // Cleanup sound on unmount
+  useEffect(() => {
+    return () => {
+      soundRef.current?.unloadAsync();
+    };
+  }, []);
 
   const currentPose = session.poses[currentPoseIndex];
   const nextPose = currentPoseIndex < session.poses.length - 1 ? session.poses[currentPoseIndex + 1] : null;
@@ -52,6 +83,7 @@ export default function useSessionPlayer(
     const interval = setInterval(() => {
       setSecondsRemaining((prev) => {
         if (prev <= 1) {
+          playAlert();
           // Last pose — session complete
           if (currentPoseIndex >= session.poses.length - 1) {
             setIsPlaying(false);

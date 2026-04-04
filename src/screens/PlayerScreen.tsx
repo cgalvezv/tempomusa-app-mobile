@@ -14,15 +14,21 @@ import CountdownDisplay from '../components/atoms/CountdownDisplay';
 import ProgressBar from '../components/atoms/ProgressBar';
 import IconButton from '../components/atoms/IconButton';
 import FullscreenImageViewer from '../components/molecules/FullscreenImageViewer';
+import useSettings from '../hooks/useSettings';
 
 export default function PlayerScreen({ navigation, route }: PlayerProps) {
   const { session } = route.params;
+  const { settings } = useSettings();
 
   const handleComplete = () => {
     navigation.replace('Summary', { session });
   };
 
-  const player = useSessionPlayer(session, handleComplete);
+  const audioConfig = settings?.voiceAlert
+    ? { audioPath: settings.audioPath, volume: settings.volume }
+    : undefined;
+
+  const player = useSessionPlayer(session, handleComplete, audioConfig);
 
   const [fullscreenVisible, setFullscreenVisible] = useState(false);
   const [fullscreenIndex, setFullscreenIndex] = useState(0);
