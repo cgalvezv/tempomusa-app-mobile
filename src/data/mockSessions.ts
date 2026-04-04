@@ -5,11 +5,11 @@ export const mockSessions: Session[] = [
     id: '1',
     name: 'Práctica del jueves',
     poses: [
-      { id: 'p1', name: 'De pie, brazos caídos', durationSeconds: 15, images: ['🧍', '🧍‍♂️', '🧍‍♀️'] },  // TODO: restore to 420, images: []
-      { id: 'p2', name: 'Sentada, espalda recta', durationSeconds: 15, images: ['🪑', '💺'] },     // TODO: restore to 1200, images: []
-      { id: 'p3', name: 'Recostada de lado', durationSeconds: 15, images: ['🛌'] },                // TODO: restore to 2700, images: []
-      { id: 'p4', name: 'Torsión sentada', durationSeconds: 15, images: ['🔄', '🪑'] },            // TODO: restore to 900, images: []
-      { id: 'p5', name: 'De pie, contraposto', durationSeconds: 15, images: ['🧍', '🚶'] },        // TODO: restore to 600, images: []
+      { id: 'p1', name: 'De pie, brazos caídos', durationSeconds: 420, images: [] },
+      { id: 'p2', name: 'Sentada, espalda recta', durationSeconds: 1200, images: [] },
+      { id: 'p3', name: 'Recostada de lado', durationSeconds: 2700, images: [] },
+      { id: 'p4', name: 'Torsión sentada', durationSeconds: 900, images: [] },
+      { id: 'p5', name: 'De pie, contraposto', durationSeconds: 600, images: [] },
     ],
     restSeconds: 5,
     createdAt: Date.now(),
