@@ -1,13 +1,13 @@
-name: EAS Update
+name: EAS Build Preview (develop)
 
 on:
   push:
     branches:
-      - develop # Solo se dispara en develop
+      - develop
 
 jobs:
-  update:
-    name: EAS Update
+  build:
+    name: Build APK Preview
     runs-on: ubuntu-latest
 
     steps:
@@ -29,5 +29,5 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Publicar EAS Update
-        run: eas update --auto --branch develop
+      - name: Build APK Preview
+        run: eas build --profile preview --platform android --non-interactive
