@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   FlatList,
   Dimensions,
@@ -66,7 +67,11 @@ export default function FullscreenImageViewer({
           contentContainerStyle={styles.carouselContent}
           renderItem={({ item }) => (
             <View style={styles.slide}>
-              <Text style={styles.imageEmoji}>{item || '🖼'}</Text>
+              {item.startsWith('file://') || item.startsWith('http') || item.startsWith('blob:') ? (
+                <Image source={{ uri: item }} style={styles.fullImage} resizeMode="contain" />
+              ) : (
+                <Text style={styles.imageEmoji}>{item || '🖼'}</Text>
+              )}
               <Text style={styles.imageHint}>Imagen de referencia</Text>
             </View>
           )}
@@ -129,6 +134,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  fullImage: {
+    width: '100%',
+    height: '100%',
   },
   imageEmoji: {
     fontSize: 80,

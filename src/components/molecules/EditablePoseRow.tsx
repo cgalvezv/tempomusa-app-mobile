@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pose } from '../../types';
 import { formatDuration, getDurationBadge } from '../../utils/formatDuration';
@@ -15,9 +15,10 @@ const poseIcons: React.ComponentProps<typeof Ionicons>['name'][] = [
 interface EditablePoseRowProps {
   pose: Pose;
   index: number;
+  onDelete?: () => void;
 }
 
-export default function EditablePoseRow({ pose, index }: EditablePoseRowProps) {
+export default function EditablePoseRow({ pose, index, onDelete }: EditablePoseRowProps) {
   const badge = getDurationBadge(pose.durationSeconds);
 
   return (
@@ -38,6 +39,11 @@ export default function EditablePoseRow({ pose, index }: EditablePoseRowProps) {
       )}
       {!badge && (
         <Text style={styles.duration}>{formatDuration(pose.durationSeconds)}</Text>
+      )}
+      {onDelete && (
+        <TouchableOpacity onPress={onDelete} activeOpacity={0.7} style={styles.deleteBtn}>
+          <Ionicons name="close-circle" size={18} color="#E24B4A" />
+        </TouchableOpacity>
       )}
       <Text style={styles.handle}>≡</Text>
     </View>
@@ -98,6 +104,9 @@ const styles = StyleSheet.create({
   },
   badgeTextLarga: {
     color: '#993C1D',
+  },
+  deleteBtn: {
+    paddingLeft: 4,
   },
   handle: {
     fontSize: 14,

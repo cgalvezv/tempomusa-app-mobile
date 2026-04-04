@@ -93,7 +93,12 @@ export default function CreateSessionScreen({ navigation, route }: CreateSession
           <SectionLabel>Poses de la sesión</SectionLabel>
 
           {poses.map((pose, index) => (
-            <EditablePoseRow key={pose.id} pose={pose} index={index} />
+            <EditablePoseRow
+              key={pose.id}
+              pose={pose}
+              index={index}
+              onDelete={() => setPoses((prev) => prev.filter((_, i) => i !== index))}
+            />
           ))}
 
           {/* Add pose button */}

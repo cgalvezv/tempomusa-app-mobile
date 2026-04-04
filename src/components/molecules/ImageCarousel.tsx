@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   FlatList,
   Dimensions,
@@ -58,7 +59,11 @@ export default function ImageCarousel({ images, dimmed, onImagePress }: ImageCar
             onPress={() => onImagePress?.(index)}
             disabled={!onImagePress}
           >
-            <Text style={styles.imageEmoji}>{item || '🖼'}</Text>
+            {item.startsWith('file://') || item.startsWith('http') || item.startsWith('blob:') ? (
+              <Image source={{ uri: item }} style={styles.image} resizeMode="cover" />
+            ) : (
+              <Text style={styles.imageEmoji}>{item || '🖼'}</Text>
+            )}
           </TouchableOpacity>
         )}
       />
@@ -105,6 +110,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 0.5,
     borderColor: '#e0e0e0',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
   },
   imageEmoji: {
     fontSize: 28,

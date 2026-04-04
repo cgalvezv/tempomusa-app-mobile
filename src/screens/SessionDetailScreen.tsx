@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SessionDetailProps } from '../types/navigation';
+import useSessions from '../hooks/useSessions';
 import StatBox from '../components/atoms/StatBox';
 import SectionLabel from '../components/atoms/SectionLabel';
 import PoseRow from '../components/molecules/PoseRow';
@@ -9,10 +10,29 @@ import { formatDuration } from '../utils/formatDuration';
 
 export default function SessionDetailScreen({ navigation, route }: SessionDetailProps) {
   const { session } = route.params;
+  const { removeSession } = useSessions();
   const totalSeconds = session.poses.reduce((sum, p) => sum + p.durationSeconds, 0);
 
   const handleStart = () => {
     navigation.navigate('Player', { session });
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      'Eliminar sesión',
+      `¿Segura que quieres eliminar "${session.name}"?`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+            await removeSession(session.id);
+            navigation.goBack();
+          },
+        },
+      ],
+    );
   };
 
   return (
@@ -23,8 +43,8 @@ export default function SessionDetailScreen({ navigation, route }: SessionDetail
           <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7}>
             <Text style={styles.backBtn}>← Volver</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.7}>
-            <Text style={styles.editBtn}>Editar</Text>
+          <TouchableOpacity onPress={handleDelete} activeOpacity={0.7}>
+            <Text style={styles.deleteBtn}>Eliminar</Text>
           </TouchableOpacity>
         </View>
 
@@ -81,9 +101,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#888',
   },
-  editBtn: {
+  deleteBtn: {
     fontSize: 13,
-    color: '#888',
+    color: '#E24B4A',
   },
   header: {
     paddingHorizontal: 16,
