@@ -7,6 +7,7 @@ import SessionDetailScreen from '../screens/SessionDetailScreen';
 import PlayerScreen from '../screens/PlayerScreen';
 import SummaryScreen from '../screens/SummaryScreen';
 import CreateSessionScreen from '../screens/CreateSessionScreen';
+import CreatePoseScreen from '../screens/CreatePoseScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import { HomeStackParamList } from '../types/navigation';
 
@@ -21,6 +22,7 @@ function HomeStack() {
       <Stack.Screen name="Player" component={PlayerScreen} options={{ animation: 'slide_from_bottom' }} />
       <Stack.Screen name="Summary" component={SummaryScreen} options={{ animation: 'slide_from_bottom' }} />
       <Stack.Screen name="CreateSession" component={CreateSessionScreen} options={{ animation: 'slide_from_bottom' }} />
+      <Stack.Screen name="CreatePose" component={CreatePoseScreen} options={{ animation: 'slide_from_bottom' }} />
     </Stack.Navigator>
   );
 }
