@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as ImagePicker from 'expo-image-picker';
 import { CreatePoseProps } from '../types/navigation';
 import { Pose } from '../types';
 import { getDurationBadge } from '../utils/formatDuration';
+import { saveImage, deleteFile } from '../services/fileStorage';
 import DurationInput from '../components/molecules/DurationInput';
 import RangeBanner from '../components/atoms/RangeBanner';
 
@@ -19,13 +21,30 @@ export default function CreatePoseScreen({ navigation }: CreatePoseProps) {
   const badge = getDurationBadge(totalSeconds);
   const canSave = name.trim().length > 0 && totalSeconds > 0;
 
-  const handleAddImage = () => {
-    // Placeholder: adds a generic emoji image
-    setImages((prev) => [...prev, '🖼']);
+  const handleAddImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 0.8,
+    });
+    if (!result.canceled && result.assets[0]) {
+      const localUri = await saveImage(result.assets[0].uri);
+      setImages((prev) => [...prev, localUri]);
+    }
   };
 
-  const handleRemoveImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
+  const handleRemoveImage = async (index: number) => {
+    const uri = images[index];
+    Alert.alert('Eliminar imagen', '¿Segura que quieres eliminar esta imagen?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Eliminar',
+        style: 'destructive',
+        onPress: async () => {
+          await deleteFile(uri);
+          setImages((prev) => prev.filter((_, i) => i !== index));
+        },
+      },
+    ]);
   };
 
   const handleSave = () => {
@@ -61,9 +80,9 @@ export default function CreatePoseScreen({ navigation }: CreatePoseProps) {
           <View style={styles.imagesSection}>
             <Text style={styles.imagesLabel}>Imágenes de referencia</Text>
             <View style={styles.imagesRow}>
-              {images.map((img, i) => (
+              {images.map((uri, i) => (
                 <TouchableOpacity key={i} style={styles.imageThumb} onPress={() => handleRemoveImage(i)} activeOpacity={0.7}>
-                  <Text style={styles.imageEmoji}>{img}</Text>
+                  <Image source={{ uri }} style={styles.imagePreview} />
                 </TouchableOpacity>
               ))}
               <TouchableOpacity style={styles.imageAdd} onPress={handleAddImage} activeOpacity={0.7}>
@@ -187,8 +206,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  imageEmoji: {
-    fontSize: 22,
+  imagePreview: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
   },
   imageAdd: {
     width: 62,
