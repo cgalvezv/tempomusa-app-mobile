@@ -30,4 +30,16 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Build APK Preview
-        run: eas build --profile preview --platform android --non-interactive
+        id: eas_build
+        run: |
+          BUILD_OUTPUT=$(eas build --profile preview --platform android --non-interactive --json)
+          BUILD_URL=$(echo "$BUILD_OUTPUT" | jq -r '.[0].artifacts.buildUrl')
+          echo "build_url=$BUILD_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Send APK link to Telegram
+        if: steps.eas_build.outputs.build_url != ''
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d parse_mode="Markdown" \
+            -d text="📦 *Nueva APK disponible*%0A%0AApp: TempomusaApp%0ABranch: develop%0ACommit: ${{ github.event.head_commit.message }}%0A%0A[Descargar APK](${{ steps.eas_build.outputs.build_url }})"
