@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PlayerProps } from '../types/navigation';
@@ -13,6 +13,7 @@ import PauseBadge from '../components/atoms/PauseBadge';
 import CountdownDisplay from '../components/atoms/CountdownDisplay';
 import ProgressBar from '../components/atoms/ProgressBar';
 import IconButton from '../components/atoms/IconButton';
+import FullscreenImageViewer from '../components/molecules/FullscreenImageViewer';
 
 export default function PlayerScreen({ navigation, route }: PlayerProps) {
   const { session } = route.params;
@@ -23,8 +24,16 @@ export default function PlayerScreen({ navigation, route }: PlayerProps) {
 
   const player = useSessionPlayer(session, handleComplete);
 
+  const [fullscreenVisible, setFullscreenVisible] = useState(false);
+  const [fullscreenIndex, setFullscreenIndex] = useState(0);
+
   const badge = getDurationBadge(player.currentPose.durationSeconds);
   const badgeInfo = badge ? { label: badge.label, variant: badge.style } : null;
+
+  const handleImagePress = (index: number) => {
+    setFullscreenIndex(index);
+    setFullscreenVisible(true);
+  };
 
   // Rest screen
   if (player.isResting && player.nextPose) {
@@ -77,7 +86,22 @@ export default function PlayerScreen({ navigation, route }: PlayerProps) {
         />
 
         {/* Image carousel */}
-        <ImageCarousel images={player.currentPose.images} dimmed={!player.isPlaying} />
+        <ImageCarousel
+          images={player.currentPose.images}
+          dimmed={!player.isPlaying}
+          onImagePress={handleImagePress}
+        />
+
+        {/* Fullscreen image viewer */}
+        <FullscreenImageViewer
+          visible={fullscreenVisible}
+          images={player.currentPose.images}
+          initialIndex={fullscreenIndex}
+          poseName={player.currentPose.name}
+          poseDescription={player.currentPose.description}
+          formattedTime={formatCountdown(player.secondsRemaining)}
+          onClose={() => setFullscreenVisible(false)}
+        />
 
         {/* Pose info */}
         <View style={styles.poseInfo}>

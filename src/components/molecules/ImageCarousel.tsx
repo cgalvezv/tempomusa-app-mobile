@@ -5,6 +5,7 @@ import {
   StyleSheet,
   FlatList,
   Dimensions,
+  TouchableOpacity,
   type NativeSyntheticEvent,
   type NativeScrollEvent,
 } from 'react-native';
@@ -15,9 +16,10 @@ const CAROUSEL_WIDTH = Dimensions.get('window').width - 28;
 interface ImageCarouselProps {
   images: string[];
   dimmed?: boolean;
+  onImagePress?: (index: number) => void;
 }
 
-export default function ImageCarousel({ images, dimmed }: ImageCarouselProps) {
+export default function ImageCarousel({ images, dimmed, onImagePress }: ImageCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
@@ -49,10 +51,15 @@ export default function ImageCarousel({ images, dimmed }: ImageCarouselProps) {
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={onScroll}
         keyExtractor={(_, i) => String(i)}
-        renderItem={({ item }) => (
-          <View style={[styles.imageSlide, dimmed && styles.dimmed]}>
+        renderItem={({ item, index }) => (
+          <TouchableOpacity
+            style={[styles.imageSlide, dimmed && styles.dimmed]}
+            activeOpacity={0.8}
+            onPress={() => onImagePress?.(index)}
+            disabled={!onImagePress}
+          >
             <Text style={styles.imageEmoji}>{item || '🖼'}</Text>
-          </View>
+          </TouchableOpacity>
         )}
       />
       <Text style={styles.photoLabel}>
